@@ -1,0 +1,81 @@
+     //     if (name.length === 0) {
+            //         $("#errorName").html("<i class=\"fa fa-times\" ></i>  Enter Name")
+            //             return false;
+            //     }
+            //    else if (email.length === 0) {
+            //         $("#errorEmail").html("<i class=\"fa fa-times\" ></i>  Enter Email")
+            //         return false;
+
+            //     }
+            //    else if (msgId.length <= 5) {
+            //         $("#errorMsg").html("<i class=\"fa fa-times\" ></i>  Enter Message")
+            //         return false;
+
+            //     }
+            //     else{
+            //         callFun();
+            //     }
+
+
+        
+
+            // alert("Hello world")
+
+
+
+
+
+            <?php
+
+if (isset($_POST['updateBtn'])) {
+    $reset_token = trim(mysqli_real_escape_string($conn, $_GET['token']));
+    $id = trim(mysqli_real_escape_string($conn, $_GET['id']));
+    $password = trim(mysqli_real_escape_string($conn, $_POST['password']));
+    $cpassword = trim(mysqli_real_escape_string($conn, $_POST['cpassword']));
+    $captcha = trim(mysqli_real_escape_string($conn, $_POST['captcha']));
+
+
+    if ($password == '' || $cpassword == '' || $captcha == '') {
+        $_SESSION['msg_u'] = "Fill All Feilds";
+    } else {
+        if ($password == $cpassword) 
+        {
+            if ($_SESSION['captcha'] == $captcha) {
+                // $query_forget="UPDATE users SET resettoeken='$reset_token',user_id='$date' WHERE email='$userid'";
+                // $run_query = mysqli_query($conn, $query);
+
+
+                if ($run_query) {
+                    $data = mysqli_fetch_assoc($run_query);
+                    $pass_hash = password_hash($password, PASSWORD_BCRYPT);
+                     $query_forget="UPDATE users SET resettoeken=' ',password='$pass_hash' ,resettokenexpire='' WHERE user_id='$id'";
+                $run_query = mysqli_query($conn, $query_forget);
+                
+                $_SESSION['msg_l'] = "Update Success";
+              
+                header('location: Login');
+        //         echo '
+        //         <script>
+        //                 window.location.href="'.base_url("Login").'"
+        //         </script>
+        // ';
+
+
+
+                } else {
+                    $_SESSION['msg_u'] = "Invalid Token and User Id";
+                }
+
+
+
+            } else {
+                $_SESSION['msg_u'] = "Captcha Not Match";
+            }
+        } else {
+            $_SESSION['msg_u'] = "Password and confirm passowrd not match";
+        }
+    }
+
+}
+
+?>
